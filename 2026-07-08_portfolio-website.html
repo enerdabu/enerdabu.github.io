@@ -1,0 +1,669 @@
+<title>Vaughn Dabu — Finance Operations</title>
+<style>
+  :root {
+    --paper: #F5F6F0;
+    --card: #FCFCF8;
+    --ink: #17251D;
+    --muted: #57685D;
+    --accent: #1E6B4E;
+    --accent-ink: #FFFFFF;
+    --redink: #A33B2E;
+    --rule: #C7CFC2;
+    --rule-strong: #17251D;
+    --chip: #E9EDE4;
+    --display: "Bodoni MT", "Didot", "Playfair Display", Georgia, serif;
+    --body: "Sitka Text", "Charter", "Iowan Old Style", Georgia, serif;
+    --mono: "Consolas", "SF Mono", "Menlo", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #101914;
+      --card: #16211B;
+      --ink: #E6EBE3;
+      --muted: #93A398;
+      --accent: #5DBE95;
+      --accent-ink: #0C1510;
+      --redink: #D97A68;
+      --rule: #2A3A31;
+      --rule-strong: #E6EBE3;
+      --chip: #1D2B23;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #101914;
+    --card: #16211B;
+    --ink: #E6EBE3;
+    --muted: #93A398;
+    --accent: #5DBE95;
+    --accent-ink: #0C1510;
+    --redink: #D97A68;
+    --rule: #2A3A31;
+    --rule-strong: #E6EBE3;
+    --chip: #1D2B23;
+  }
+  :root[data-theme="light"] {
+    --paper: #F5F6F0;
+    --card: #FCFCF8;
+    --ink: #17251D;
+    --muted: #57685D;
+    --accent: #1E6B4E;
+    --accent-ink: #FFFFFF;
+    --redink: #A33B2E;
+    --rule: #C7CFC2;
+    --rule-strong: #17251D;
+    --chip: #E9EDE4;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Ledger margin: the classic double red rule down the left of the page */
+  .sheet {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 24px 0 56px;
+    position: relative;
+  }
+  .sheet::before {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 32px;
+    border-left: 1px solid var(--redink);
+    opacity: .55;
+  }
+  .sheet::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 36px;
+    border-left: 1px solid var(--redink);
+    opacity: .3;
+  }
+  @media (max-width: 640px) {
+    .sheet { padding: 0 18px 0 40px; }
+    .sheet::before { left: 20px; }
+    .sheet::after { left: 24px; }
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    padding: 26px 0 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .wordmark {
+    font-family: var(--display);
+    font-size: 21px; letter-spacing: .02em;
+    color: var(--ink);
+  }
+  .wordmark .amp { color: var(--redink); }
+  nav { display: flex; gap: 26px; align-items: baseline; }
+  nav a {
+    font-family: var(--mono); font-size: 12.5px;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  nav a:hover { color: var(--accent); text-decoration: none; }
+  .avail {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 10px; border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 56px;
+    align-items: center;
+    padding: 76px 0 70px;
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; gap: 44px; padding: 56px 0; }
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--redink);
+    margin: 0 0 22px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(38px, 5.6vw, 62px);
+    line-height: 1.06;
+    letter-spacing: -0.005em;
+    margin: 0 0 24px;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede {
+    font-size: 19px; line-height: 1.6;
+    color: var(--muted);
+    max-width: 34em;
+    margin: 0 0 34px;
+  }
+  .lede strong { color: var(--ink); font-weight: 600; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-block;
+    font-family: var(--mono); font-size: 13px;
+    letter-spacing: .12em; text-transform: uppercase;
+    padding: 15px 26px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    background: transparent;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .btn:hover { text-decoration: none; background: var(--accent); color: var(--accent-ink); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); }
+  .btn.primary:hover { filter: brightness(1.08); }
+
+  /* Hero ledger card */
+  .ledger-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    padding: 26px 28px 22px;
+    box-shadow: 0 1px 0 var(--rule);
+  }
+  .ledger-card h2 {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 400;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 14px;
+    display: flex; justify-content: space-between; gap: 12px;
+  }
+  .ledger-card table {
+    width: 100%; border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .ledger-card td {
+    padding: 8px 0;
+    border-bottom: 1px dotted var(--rule);
+    font-size: 15px;
+  }
+  .ledger-card td:last-child {
+    text-align: right;
+    font-family: var(--mono); font-size: 13.5px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .ledger-card tr.total td {
+    border-bottom: none;
+    border-top: 1px solid var(--rule-strong);
+    box-shadow: 0 3px 0 -1px var(--rule-strong); /* double rule = closed & final */
+    padding-top: 12px; padding-bottom: 4px;
+    font-weight: 600;
+  }
+  .ledger-card tr.total td:last-child { color: var(--ink); }
+  .row-in { opacity: 0; transform: translateY(4px); animation: entry .5s ease forwards; }
+  .row-in:nth-child(1) { animation-delay: .15s; }
+  .row-in:nth-child(2) { animation-delay: .35s; }
+  .row-in:nth-child(3) { animation-delay: .55s; }
+  .row-in:nth-child(4) { animation-delay: .75s; }
+  .row-in:nth-child(5) { animation-delay: .95s; }
+  .row-in:nth-child(6) { animation-delay: 1.2s; }
+  @keyframes entry { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .row-in { animation: none; opacity: 1; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- Stats strip ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: 34px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (max-width: 780px) { .stats { grid-template-columns: repeat(2, 1fr); row-gap: 30px; } }
+  .stat { padding: 0 18px; border-left: 1px dotted var(--rule); }
+  .stat:first-child { border-left: none; padding-left: 0; }
+  @media (max-width: 780px) { .stat:nth-child(3) { border-left: none; padding-left: 0; } }
+  .stat b {
+    display: block;
+    font-family: var(--display); font-weight: 500;
+    font-size: 34px; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .stat span {
+    font-family: var(--mono); font-size: 11.5px;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- Sections ---------- */
+  section { padding: 72px 0; border-bottom: 1px solid var(--rule); }
+  .acct {
+    display: flex; align-items: baseline; gap: 18px;
+    margin-bottom: 8px;
+  }
+  .acct code {
+    font-family: var(--mono); font-size: 13px;
+    letter-spacing: .14em;
+    color: var(--redink);
+  }
+  h2.title {
+    font-family: var(--display); font-weight: 500;
+    font-size: clamp(28px, 3.6vw, 40px);
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  .section-note { color: var(--muted); max-width: 40em; margin: 0 0 44px; }
+
+  /* ---------- Engagements ---------- */
+  .case {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    padding: 34px 36px 28px;
+    margin-bottom: 26px;
+    transition: border-color .15s ease;
+  }
+  .case:hover { border-color: var(--accent); }
+  @media (max-width: 640px) { .case { padding: 24px 20px; } }
+  .case-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px; flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .case-head code {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
+    color: var(--muted);
+  }
+  .case h3 {
+    font-family: var(--display); font-weight: 500;
+    font-size: 26px; line-height: 1.2;
+    margin: 0 0 4px;
+    text-wrap: balance;
+  }
+  .case .client {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .08em;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .case p.body { margin: 0 0 20px; max-width: 46em; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .tags span {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em;
+    background: var(--chip); color: var(--muted);
+    padding: 5px 11px; border-radius: 2px;
+  }
+  .outcome-inner {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px; flex-wrap: wrap; width: 100%;
+    border-top: 1px solid var(--rule-strong);
+    box-shadow: 0 -4px 0 -3px var(--rule-strong); /* double rule above the closing entry */
+    margin-top: 2px; padding-top: 14px;
+  }
+  .outcome-label {
+    font-family: var(--mono); font-size: 11.5px;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .outcome-value {
+    font-family: var(--display); font-size: 19px; font-weight: 500;
+    color: var(--ink); font-style: italic;
+    text-align: right;
+  }
+
+  .also { margin-top: 38px; }
+  .also h4 {
+    font-family: var(--mono); font-size: 12px; font-weight: 400;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 16px;
+  }
+  .also ul {
+    columns: 2; column-gap: 48px;
+    margin: 0; padding: 0; list-style: none;
+    max-width: 56em;
+  }
+  @media (max-width: 640px) { .also ul { columns: 1; } }
+  .also li {
+    padding: 9px 0;
+    border-bottom: 1px dotted var(--rule);
+    break-inside: avoid;
+    font-size: 15.5px; color: var(--muted);
+  }
+  .also li::before { content: "— "; color: var(--redink); }
+
+  /* ---------- Method ---------- */
+  .principles {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 26px;
+    margin-bottom: 54px;
+  }
+  @media (max-width: 720px) { .principles { grid-template-columns: 1fr; } }
+  .principle { border-top: 2px solid var(--accent); padding-top: 16px; }
+  .principle h3 {
+    font-family: var(--display); font-weight: 500; font-size: 21px;
+    margin: 0 0 8px;
+  }
+  .principle p { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+  .std-rows { border-top: 1px solid var(--rule); margin: 0; }
+  .std-row {
+    display: grid; grid-template-columns: 200px 1fr; gap: 24px;
+    padding: 16px 0; border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  @media (max-width: 640px) { .std-row { grid-template-columns: 1fr; gap: 4px; } }
+  .std-row dt {
+    font-family: var(--mono); font-size: 11.5px;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted); margin: 0;
+  }
+  .std-row dd { margin: 0; font-size: 15.5px; }
+
+  .onboard { margin-top: 54px; }
+  .onboard h3 {
+    font-family: var(--display); font-weight: 500; font-size: 24px;
+    margin: 0 0 24px;
+  }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  @media (max-width: 720px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    background: var(--card); border: 1px solid var(--rule);
+    padding: 22px 24px;
+  }
+  .step code {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em;
+    color: var(--redink); text-transform: uppercase;
+    display: block; margin-bottom: 10px;
+  }
+  .step b { display: block; font-size: 16.5px; margin-bottom: 6px; }
+  .step p { margin: 0; font-size: 14.5px; color: var(--muted); }
+
+  /* ---------- Contact ---------- */
+  .contact { text-align: left; padding: 84px 0 76px; border-bottom: none; }
+  .contact h2 {
+    font-family: var(--display); font-weight: 500;
+    font-size: clamp(32px, 5vw, 54px);
+    line-height: 1.08; margin: 0 0 20px;
+    max-width: 15em;
+    text-wrap: balance;
+  }
+  .contact .pitch { font-size: 18.5px; color: var(--muted); max-width: 36em; margin: 0 0 36px; }
+  .contact .pitch strong { color: var(--ink); }
+  .contact-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+  .quiet {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .06em;
+    color: var(--muted);
+  }
+  .quiet a { color: var(--muted); text-decoration: underline; }
+  .sig {
+    margin-top: 56px; padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .sig .name { font-family: var(--display); font-style: italic; font-size: 22px; }
+  .sig .role { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+  footer {
+    padding: 26px 0 40px;
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em;
+    color: var(--muted);
+  }
+</style>
+
+<div class="sheet">
+
+  <header>
+    <div class="wordmark">Dabu <span class="amp">&amp;</span> Ledger</div>
+    <nav aria-label="Sections">
+      <a href="#work">Engagements</a>
+      <a href="#method">Method</a>
+      <a href="#contact">Engage</a>
+    </nav>
+    <span class="avail">Accepting one client — Q3 2026</span>
+  </header>
+
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Finance Operations · Multi-Entity · Remote</p>
+      <h1>Books that balance.<br>Reports that <em>get read.</em></h1>
+      <p class="lede">I'm <strong>Vaughn Dabu</strong> — a finance operations specialist for founders running more than one company at once. I keep multi-entity books audit-ready in regulated industries, and turn them into the one Friday packet your leadership team actually opens. Behind it: twenty years of quality control, from semiconductor production lines to Microsoft's global support programs.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#" data-mail="diagnostic">Request the free diagnostic</a>
+        <a class="btn" href="#work">See the work</a>
+      </div>
+    </div>
+
+    <aside class="ledger-card" aria-label="Summary of practice">
+      <h2><span>Client Ledger — Summary</span><span>FY 2026</span></h2>
+      <table>
+        <tbody>
+          <tr class="row-in"><td>Entities under management</td><td>7</td></tr>
+          <tr class="row-in"><td>Executive reports, every Friday</td><td>4</td></tr>
+          <tr class="row-in"><td>Month-end close, steps</td><td>12</td></tr>
+          <tr class="row-in"><td>Audit accuracy, self-scored</td><td>93 / 100</td></tr>
+          <tr class="row-in"><td>Client names disclosed</td><td>0</td></tr>
+          <tr class="total row-in"><td>Balance carried forward</td><td>Trust</td></tr>
+        </tbody>
+      </table>
+    </aside>
+  </div>
+
+  <div class="stats" role="list">
+    <div class="stat" role="listitem"><b>20+</b><span>years in quality &amp; ops</span></div>
+    <div class="stat" role="listitem"><b>7</b><span>entities, concurrent</span></div>
+    <div class="stat" role="listitem"><b>100%</b><span>AP accuracy standard</span></div>
+    <div class="stat" role="listitem"><b>48h</b><span>diagnostic turnaround</span></div>
+  </div>
+
+  <section id="work">
+    <div class="acct"><code>ACCT 100</code></div>
+    <h2 class="title">Selected engagements</h2>
+    <p class="section-note">Client names are withheld — the same confidentiality discipline your books would get. Every engagement below is verifiable by reference on request.</p>
+
+    <article class="case">
+      <div class="case-head">
+        <code>ENG–001 · AUDIT &amp; CLEANUP</code>
+        <code>FY 2025 · 12 MONTHS</code>
+      </div>
+      <h3>Full-year, two-entity audit for a consumer products group</h3>
+      <p class="client">Manufacturer + brand company · two states · shared vendors and cards</p>
+      <p class="body">Two related companies, one tangled year: shared credit cards, intercompany charges at the unit level, and lender-looking payments that were actually owner distributions. I audited all twelve months on both sets of books, corrected the misclassifications with documented journal entries, reconciled the intercompany account to a net-zero position, and delivered a CPA-ready adjustment packet — every finding cited to a source document, never a hunch.</p>
+      <div class="tags"><span>QuickBooks Online</span><span>Intercompany reconciliation</span><span>JE packet</span><span>Vendor attribution</span><span>Card-level mapping</span></div>
+      <div class="outcome-inner">
+        <span class="outcome-label">Closing entry</span>
+        <span class="outcome-value">Combined books signed off — zero open discrepancies.</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="case-head">
+        <code>ENG–002 · BUILD</code>
+        <code>2026 · ONGOING</code>
+      </div>
+      <h3>280E-compliant accounting stack for a licensed cannabis manufacturer</h3>
+      <p class="client">Adult-use manufacturer · New Jersey + Massachusetts · pre-revenue through launch</p>
+      <p class="body">In cannabis, a misclassified expense isn't a bookkeeping error — it's a tax liability. I built the full accounting infrastructure before first revenue: a ~165-account chart of accounts per entity engineered around IRC §280E and §471-11 absorption costing, class tracking that separates COGS from non-deductible operating expense, a three-way intercompany mirror across affiliated entities, and buildout capitalization policy so pre-production costs land on the balance sheet, not the P&amp;L.</p>
+      <div class="tags"><span>IRC 280E</span><span>§471-11 costing</span><span>COA design</span><span>Class tracking</span><span>Capitalization policy</span><span>Multi-entity</span></div>
+      <div class="outcome-inner">
+        <span class="outcome-label">Closing entry</span>
+        <span class="outcome-value">Audit-ready from day one — before the first dollar of revenue.</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="case-head">
+        <code>ENG–003 · REPORTING SYSTEM</code>
+        <code>WEEKLY · LIVE</code>
+      </div>
+      <h3>The Friday packet: a self-auditing executive reporting system</h3>
+      <p class="client">Multi-entity group · CEO + CFO + outside CPA as readers</p>
+      <p class="body">Four workbooks ship every Friday — one per entity plus a consolidated rollup — built as audits, not summaries. Each carries a bookkeeping composite score, a treasury watch in red-amber-green, and a carry-forward log so no finding ever silently disappears. Every report ends with a self-accuracy scorecard: valid findings versus false positives, in writing, so leadership can see the quality of the work — not just take my word for it.</p>
+      <div class="tags"><span>Excel automation</span><span>Composite scorecards</span><span>Treasury RAG watch</span><span>Carry-forward log</span><span>Self-scored accuracy</span></div>
+      <div class="outcome-inner">
+        <span class="outcome-label">Closing entry</span>
+        <span class="outcome-value">Leadership runs the week from one packet.</span>
+      </div>
+    </article>
+
+    <div class="also">
+      <h4>Also on the ledger</h4>
+      <ul>
+        <li>KYB &amp; banking application packages for high-risk industries</li>
+        <li>Asset-sale structuring support (schedules, invoicing, disposal entries)</li>
+        <li>Equipment, freight &amp; lease capitalization trackers</li>
+        <li>Contractor &amp; influencer commission models</li>
+        <li>Receipt-folder-to-workbook consolidation pipelines</li>
+        <li>AP/AR ownership end-to-end, including payment-timing plans</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="method">
+    <div class="acct"><code>ACCT 200</code></div>
+    <h2 class="title">Method &amp; standards</h2>
+    <p class="section-note">Anyone can categorize transactions. What you're hiring is judgment — and judgment has rules.</p>
+
+    <div class="principles">
+      <div class="principle">
+        <h3>Verified before flagged</h3>
+        <p>A pattern-match is a candidate, not a finding. Nothing reaches your desk until it's checked against the trial balance, the vendor master, and the source document.</p>
+      </div>
+      <div class="principle">
+        <h3>Source documents or it didn't happen</h3>
+        <p>Entity attribution comes from the bill-to, the PO, the statement — never from guessing by a vendor's city or name. Facts only, citations included.</p>
+      </div>
+      <div class="principle">
+        <h3>Self-scored, in writing</h3>
+        <p>Every audit ends with my own accuracy scorecard: what I got right, what I retracted, and the completion rate. You always know the quality of what you're paying for.</p>
+      </div>
+      <div class="principle">
+        <h3>Confidential by default</h3>
+        <p>No client names on this page, no figures that could identify anyone. Your books get the same treatment. References available privately, on request.</p>
+      </div>
+    </div>
+
+    <dl class="std-rows">
+      <div class="std-row"><dt>Standards</dt><dd>IRC §280E · §471-11 absorption costing · GAAP · ASC 850 intercompany</dd></div>
+      <div class="std-row"><dt>Systems</dt><dd>QuickBooks Online (multi-entity) · Gusto · Power BI · Google Workspace · SharePoint · Monday.com · Slack · Canva</dd></div>
+      <div class="std-row"><dt>Automation</dt><dd>Advanced Excel &amp; Sheets pipelines (ExcelJS / SheetJS) · AI-assisted audit sweeps, human-verified</dd></div>
+      <div class="std-row"><dt>Credentials</dt><dd>Lean Six Sigma Yellow Belt · ISO 9001:2008 Internal Quality Auditor · EHS Internal Auditor</dd></div>
+      <div class="std-row"><dt>Industries</dt><dd>Cannabis &amp; hemp (plant-touching and management co) · e-commerce · consumer products</dd></div>
+    </dl>
+
+    <div class="onboard record">
+      <h3>The record — twenty years of not letting errors through</h3>
+      <p class="section-note">Bookkeeping is the newest chapter of an old habit. Every role below was, one way or another, the same job: catch the defect before it ships.</p>
+      <dl class="std-rows">
+        <div class="std-row">
+          <dt>2024 — present</dt>
+          <dd><b>Finance Operations, multi-entity U.S. group</b> — full-cycle AP/AR, intercompany reconciliation, and weekly executive reporting across seven entities, direct to CEO and CPA.</dd>
+        </div>
+        <div class="std-row">
+          <dt>2023 — 2024</dt>
+          <dd><b>Operations Supervisor, Majorel</b> (Microsoft Store, North America) — supervised and coached agent teams to KPI; turned around underperforming teams with measured action plans.</dd>
+        </div>
+        <div class="std-row">
+          <dt>2020 — 2023</dt>
+          <dd><b>Quality Specialist, Majorel</b> (Microsoft Store — Americas, EMEA, APAC) — QA audits, compliance checks, and client calibrations. Best Quality Specialist, twice.</dd>
+        </div>
+        <div class="std-row">
+          <dt>2013 — 2022</dt>
+          <dd><b>Sutherland Global Services</b> (Microsoft retention &amp; support) — complex billing and account resolution under strict data-privacy compliance. Best in Quality Assurance, twice.</dd>
+        </div>
+        <div class="std-row">
+          <dt>2003 — 2013</dt>
+          <dd><b>Nanox Philippines</b> (TFT display manufacturing) — operator to line leader to Statistical Process Control leader; ran defect-prevention programs to ISO 9001 standards.</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="onboard">
+      <h3>Your first thirty days</h3>
+      <div class="steps">
+        <div class="step">
+          <code>Days 1–7</code>
+          <b>Diagnostic</b>
+          <p>Read-only access. I audit a sample of your books and return a findings memo: what's clean, what's off, and what it's costing you.</p>
+        </div>
+        <div class="step">
+          <code>Days 8–14</code>
+          <b>Cleanup plan</b>
+          <p>A prioritized correction list with journal entries drafted and cited — you (or your CPA) approve before anything posts.</p>
+        </div>
+        <div class="step">
+          <code>Days 15–30</code>
+          <b>Cadence live</b>
+          <p>First month-end close on the 12-step checklist, and your first Friday packet ships. From here it simply runs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="acct"><code>ACCT 300</code></div>
+    <h2>Send me one week of your books.</h2>
+    <p class="pitch">You'll get a findings memo back within <strong>48 hours</strong> — what's clean, what's misclassified, and what it's quietly costing you. Free, no commitment, and useful even if you never hire me. That's the whole pitch: see the work first.</p>
+    <div class="contact-row">
+      <a class="btn primary" href="#" data-mail="diagnostic">Email Vaughn — 1 click, pre-written</a>
+      <a class="btn" href="#" data-mail="question">Just have a question?</a>
+    </div>
+    <p class="quiet">Replies within one business day · Works U.S. business hours from the Philippines · References available on request · <a href="#" data-mail="plain"><span data-mail-text></span></a></p>
+
+    <div class="sig">
+      <span class="name">Ener &#8220;Vaughn&#8221; Dabu</span>
+      <span class="role">Finance Operations · Est. cadence: every Friday</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Vaughn Dabu</span>
+    <span>This page names no clients. That's on purpose.</span>
+  </footer>
+
+</div>
+
+<script>
+  // Contact address assembled at runtime so scrapers reading the raw HTML never see it.
+  (function () {
+    var addr = ["enerdabu", "gmail.com"].join("@");
+    var subjects = {
+      diagnostic: {
+        subject: "Diagnostic request — one week of books",
+        body: "Hi Vaughn,\n\nWe're a [industry] company with [number] entities. I'd like the free diagnostic.\n\nName:\nCompany:\nBest way to reach me:"
+      },
+      question: { subject: "Quick question for Vaughn", body: "" },
+      plain: { subject: "", body: "" }
+    };
+    document.querySelectorAll("[data-mail]").forEach(function (el) {
+      var kind = subjects[el.getAttribute("data-mail")] || subjects.plain;
+      var href = "mailto:" + addr;
+      var params = [];
+      if (kind.subject) params.push("subject=" + encodeURIComponent(kind.subject));
+      if (kind.body) params.push("body=" + encodeURIComponent(kind.body));
+      if (params.length) href += "?" + params.join("&");
+      el.setAttribute("href", href);
+    });
+    document.querySelectorAll("[data-mail-text]").forEach(function (el) {
+      el.textContent = addr;
+    });
+  })();
+</script>
